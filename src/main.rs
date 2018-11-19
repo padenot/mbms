@@ -76,15 +76,18 @@ fn go() -> Result<(), bela::error::Error> {
     println!("loading samples & decoding...");
 
     let (mlr, mlr_renderer) = MLR::new(128., 44100);
+    let (mlr2, mlr_renderer2) = MLR::new(128., 44100);
     let (mds, mds_renderer) = MDS::new(16, 8, 128.);
     let monome = Monome::new("/prefix".to_string()).unwrap();
 
     let mut control = Control::new(monome);
     control.push(Box::new(mlr));
+    control.push(Box::new(mlr2));
     control.push(Box::new(mds));
 
     let mut render = Render::new();
     render.push(Box::new(mlr_renderer));
+    render.push(Box::new(mlr_renderer2));
     render.push(Box::new(mds_renderer));
 
     let mut monome_task = MonomeTask {
