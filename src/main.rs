@@ -136,7 +136,7 @@ fn go() -> Result<(), bela::error::Error> {
                 }
 
                 if (!equal) {
-                    monome.set_all(&ggrid.to_vec());
+                    monome.set_all(&ggrid);
                     last_grid = grid;
                 }
 
