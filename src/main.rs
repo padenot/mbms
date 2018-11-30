@@ -75,9 +75,9 @@ type BelaApp<'a> = Bela<AppData<'a, Render>>;
 fn go() -> Result<(), bela::error::Error> {
     println!("loading samples & decoding...");
 
-    let (mlr, mlr_renderer) = MLR::new(128., 44100);
-    let (mlr2, mlr_renderer2) = MLR::new(128., 44100);
-    let (mds, mds_renderer) = MDS::new(16, 8, 128.);
+    let (mlr, mlr_renderer) = MLR::new(BelaPort::AudioOut(0), 128., 44100);
+    let (mlr2, mlr_renderer2) = MLR::new(BelaPort::AudioOut(1), 128., 44100);
+    let (mds, mds_renderer) = MDS::new((BelaPort::AnalogOut(0), BelaPort::AnalogOut(7)), 16, 7, 128.);
     let monome = Monome::new("/prefix".to_string()).unwrap();
 
     let mut control = Control::new(monome);
@@ -94,7 +94,6 @@ fn go() -> Result<(), bela::error::Error> {
         callback: |control: &mut Control| {
             let mut grid = [0 as u8; 128];
             let mut last_grid = [0 as u8; 128];
-            let mut ggrid = [false; 128];
             let monome = &mut control.monome;
             let controllers = &mut control.controllers;
             loop {
@@ -129,19 +128,12 @@ fn go() -> Result<(), bela::error::Error> {
                     }
                 }
 
-                for i in 0..128 {
-                    if grid[i] != 0 {
-                        ggrid[i] = true;
-                    }
-                }
-
-                if (!equal) {
-                    monome.set_all(&ggrid);
+                if !equal {
+                    monome.set_all_intensity(&grid);
                     last_grid = grid;
                 }
 
                 grid.iter_mut().map(|x| *x = 0).count();
-                ggrid.iter_mut().map(|x| *x = false).count();
 
                 thread::sleep(Duration::from_millis(32));
             }
