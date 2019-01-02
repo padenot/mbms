@@ -142,7 +142,7 @@ fn go() -> Result<(), bela::error::Error> {
 
                 grid.iter_mut().map(|x| *x = 0).count();
 
-                thread::sleep(Duration::from_millis(32));
+                thread::sleep(Duration::from_millis(64));
             }
         },
         args: control
