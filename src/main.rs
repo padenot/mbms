@@ -107,7 +107,9 @@ fn go() -> Result<(), bela::error::Error> {
                         match e {
                             MonomeEvent::GridKey { x, y, direction: _ } => {
                                 if y == 0 && x < 8 {
-                                    control.current = x as usize;
+                                    if (x as usize) < controllers.len() {
+                                        control.current = x as usize;
+                                    }
                                 } else {
                                     controllers[control.current].input(e);
                                 }
