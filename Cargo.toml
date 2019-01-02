@@ -22,5 +22,8 @@ path = "../mlr-rs/mlr-rs/"
 [dependencies.mds]
 path = "../mds/"
 
+[dependencies.mmms]
+path = "../mmms/"
+
 [dependencies.mbms-traits]
 path = "../mbms-traits/"

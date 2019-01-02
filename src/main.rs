@@ -1,6 +1,7 @@
 extern crate log;
 extern crate mlr_rs;
 extern crate mds;
+extern crate mmms;
 extern crate bela;
 extern crate pretty_env_logger;
 extern crate mbms_traits;
@@ -10,8 +11,9 @@ use std::thread;
 use std::time::Duration;
 
 use bela::*;
-use mlr_rs::{MLR, MLRRenderer};
-use mds::{MDS, MDSRenderer};
+use mlr_rs::{MLR};
+use mds::{MDS};
+use mmms::{MMMS};
 use mbms_traits::*;
 use monome::*;
 
@@ -78,17 +80,20 @@ fn go() -> Result<(), bela::error::Error> {
     let (mlr, mlr_renderer) = MLR::new(BelaPort::AudioOut(0), 128., 44100);
     let (mlr2, mlr_renderer2) = MLR::new(BelaPort::AudioOut(1), 128., 44100);
     let (mds, mds_renderer) = MDS::new((BelaPort::AnalogOut(0), BelaPort::AnalogOut(7)), 16, 7, 128.);
+    let (mmms, mmms_renderer) = MMMS::new((BelaPort::AnalogOut(0), BelaPort::AnalogOut(1)), 16, 7, 128.);
     let monome = Monome::new("/prefix".to_string()).unwrap();
 
     let mut control = Control::new(monome);
     control.push(Box::new(mlr));
     control.push(Box::new(mlr2));
     control.push(Box::new(mds));
+    control.push(Box::new(mmms));
 
     let mut render = Render::new();
     render.push(Box::new(mlr_renderer));
     render.push(Box::new(mlr_renderer2));
     render.push(Box::new(mds_renderer));
+    render.push(Box::new(mmms_renderer));
 
     let mut monome_task = MonomeTask {
         callback: |control: &mut Control| {
